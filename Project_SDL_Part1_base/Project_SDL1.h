@@ -29,6 +29,8 @@ private:
 
 SDL_Texture* animal_text = NULL;
 SDL_Rect animal_rect;
+bool r = false;// Stoker des directions ( move )
+bool d = false; // d == down et r == right ( directions )
 
 public:
   animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr);
@@ -41,14 +43,41 @@ public:
   SDL_Texture* const getAnimalText(){
     return this->animal_text;
   }
+
+  void setAnimalRect(SDL_Rect animal_rect)
+  {
+    this->animal_rect = animal_rect; 
+  }
+
   SDL_Rect const getAnimalRect(){
     return this->animal_rect;
   }
+
+  void set_r(bool r)
+  {
+    this->r = r;
+  }
+
+  void set_d(bool d)
+  {
+    this->d = d;
+  }
+
+  bool get_r()
+  {
+    return this->r;
+  }
+
+  bool get_d()
+  {
+    return this->d;
+  }
+
   //void draw(){}; // todo: Draw the animal on the screen <-> window_renderer_ptr.
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
-  //virtual void move(){} = 0; // todo: Animals move around, but in a different
+  virtual void move() = 0; // todo: Animals move around, but in a different
                              // fashion depending on which type of animal
 };
 
@@ -62,6 +91,9 @@ class sheep : public animal {
   public:
   sheep(SDL_Renderer* window_renderer_ptr_);
   ~sheep();
+
+  void move();
+
   };
 
 // Insert here:
@@ -77,6 +109,9 @@ class wolf : public animal {
   public:
   wolf(SDL_Renderer* window_renderer_ptr_);
   ~wolf();
+
+  void move();
+
   };
 
 // The "ground" on which all the animals live (like the std::vector

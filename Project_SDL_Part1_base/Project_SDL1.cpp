@@ -25,9 +25,9 @@ namespace {
 // Its purpose is to indicate to the compiler that everything
 // inside of it is UNIQUELY used within this source file.
 
-SDL_Texture* load_texture_for(const std::string& path,
+SDL_Texture* load_texture_for(const std::string& path, 
                               SDL_Renderer* renderer) {
-  SDL_Texture* loaded_image = IMG_LoadTexture(renderer, path.c_str());
+SDL_Texture* loaded_image = IMG_LoadTexture(renderer, path.c_str());
 
   if (loaded_image == nullptr) {
     throw std::runtime_error("Unable to load image");
@@ -48,7 +48,6 @@ ground::ground(SDL_Renderer* window_renderer_ptr_)
   this->window_renderer_ptr_ = window_renderer_ptr_;
   // this->background_=background_;
 
-  
 }
 
 void ground::add_animal(animal* animal)
@@ -56,10 +55,18 @@ void ground::add_animal(animal* animal)
     this->ListAnimal.push_back(animal);
   };
 
+void ground::update() // FOnction Move Animeaux
+{
+  for(std::vector<animal> animal : this->ListAnimal)
+  {
+    animal->move();
+  }
+}
+
 application::application(unsigned n_sheep, unsigned n_wolf) // config de la fenetre
 {
   SDL_CreateWindowAndRenderer(frame_width, frame_height, 0, &this->window_ptr_, &this->window_renderer_ptr_);
-  SDL_SetRenderDrawColor(this->window_renderer_ptr_, 190, 255, 91, 100);
+  SDL_SetRenderDrawColor(this->window_renderer_ptr_, 255, 255, 91, 100);
   SDL_Rect background = { 0, 0, frame_width, frame_height};
   SDL_RenderFillRect(this->window_renderer_ptr_, &background);
 
@@ -88,6 +95,36 @@ sheep::sheep(SDL_Renderer* window_renderer_ptr_):animal("../media/sheep.png",win
   SDL_Rect rect = this->getAnimalRect();
   SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
 }
+  
+sheep::move()
+{
+  SDL_Rect rect = this->getAnimalRect();
+
+  if (rect.x + frame_boundary >= frame_width)
+    this->set_r(false);
+  else if (rect.x - frame_boundary + rect.w <= 0)
+    this->set_r(true);
+
+  if (rect.y + frame_boundary >= frame_height)
+    this->set_d(false);
+  else if (rect.y - frame_boundary + rect.h <= 0)
+    this->set_d(true);
+
+  if (this->get_r())
+    rect.x += 1;
+  else
+    rect.x -= 1;
+
+  if(this->get_d())
+    rect.y += 1;
+  else
+    rect.y -= 1;
+
+  this->setAnimalRect(rect);
+  SDL_RenderCopy(this->window_renderer_ptr_,this->getAnimalRect,NULL,&rect);
+
+}
+
 
 sheep::~sheep() = default;
 
@@ -95,6 +132,35 @@ wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window
 {
   SDL_Rect rect = this->getAnimalRect();
   SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
+}
+
+
+wolf::move()
+{
+  SDL_Rect rect = this->getAnimalRect();
+
+  if (rect.x + frame_boundary >= frame_width)
+    this->set_r(false);
+  else if (rect.x - frame_boundary + rect.w <= 0)
+    this->set_r(true);
+
+  if (rect.y + frame_boundary >= frame_height)
+    this->set_d(false);
+  else if (rect.y - frame_boundary + rect.h <= 0)
+    this->set_d(true);
+
+  if (this->get_r())
+    rect.x += 1;
+  else
+    rect.x -= 1;
+
+  if(this->get_d())
+    rect.y += 1;
+  else
+    rect.y -= 1;
+
+  this->setAnimalRect(rect);
+  SDL_RenderCopy(this->window_renderer_ptr_,this->getAnimalRect,NULL,&rect);
 }
 
 wolf::~wolf() = default;
@@ -115,9 +181,9 @@ int application::loop(unsigned period)
 
   while(SDL_GetTicks() < period)
   {
+    this->update();
     SDL_Delay(frame_time);
     SDL_RenderPresent(this->window_renderer_ptr_);
   }
   return 1;
 }
-

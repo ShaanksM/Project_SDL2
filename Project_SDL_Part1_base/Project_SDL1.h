@@ -102,7 +102,7 @@ public:
 };
 
 // The application class, which is in charge of generating the window
-class application {
+class application{
 private:
   // The following are OWNING ptrs
   SDL_Window* window_ptr_ = NULL;

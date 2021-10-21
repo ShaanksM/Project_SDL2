@@ -105,4 +105,8 @@ int application::loop(unsigned period)
   return 1;
 }
 
-  
+// ground::ground(SDL_Renderer* window_renderer_ptr_)
+// {
+//   this->window_renderer_ptr_ = window_renderer_ptr_;;
+//   this->background_=background_;
+// }

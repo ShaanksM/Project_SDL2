@@ -93,4 +93,16 @@ animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) 
     this->animal_rect.y = get_random_int_in_range(frame_boundary, frame_height - frame_boundary);
   };
 
+int application::loop(unsigned period)
+{
+  period = period * 1000; // Conversion des secondes en tick
+
+  while(SDL_GetTicks() < period)
+  {
+    SDL_Delay(frame_time);
+    SDL_RenderPresent(this->window_renderer_ptr_);
+  }
+  return 1;
+}
+
   

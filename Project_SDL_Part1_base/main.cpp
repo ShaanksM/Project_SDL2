@@ -19,13 +19,13 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Created window" << std::endl;
 
-  //int retval = my_app.loop(std::stoul(argv[3]));
+  int retval = my_app.loop(std::stoul(argv[3]));
 
-  //std::cout << "Exiting application with code " << retval << std::endl;
+  std::cout << "Exiting application with code " << retval << std::endl;
 
 
-  SDL_Delay(5000);
+  // SDL_Delay(5000);
   SDL_Quit();
-  return 0;
-  //return retval;
+  // return 0;
+  return retval;
 }

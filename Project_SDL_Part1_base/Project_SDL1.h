@@ -115,10 +115,10 @@ public:
   application(unsigned n_sheep, unsigned n_wolf); // Ctor
   ~application();                                 // dtor
 
-  // int loop(unsigned period); // main loop of the application.
-  //                            // this ensures that the screen is updated
-  //                            // at the correct rate.
-  //                            // See SDL_GetTicks() and SDL_Delay() to enforce a
-  //                            // duration the application should terminate after
-  //                            // 'period' seconds
+  int loop(unsigned period); // main loop of the application.
+                             // this ensures that the screen is updated
+                             // at the correct rate.
+                             // See SDL_GetTicks() and SDL_Delay() to enforce a
+                             // duration the application should terminate after
+                             // 'period' seconds
 };

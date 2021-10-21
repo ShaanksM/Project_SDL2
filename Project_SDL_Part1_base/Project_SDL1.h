@@ -82,19 +82,22 @@ class wolf : public animal {
 // The "ground" on which all the animals live (like the std::vector
 // in the zoo example).
 class ground {
+
 private:
   // Attention, NON-OWNING ptr, again to the screen
   SDL_Renderer* window_renderer_ptr_;
-  std::vector<std::unique_ptr<animal>> ListAnimal;
+  std::vector<animal*> ListAnimal;
   int counter = 0;
   // Some attribute to store all the wolves and sheep
   // here
 
 public:
   //void AjouterDesAnimaux(std::)
-  ground(SDL_Surface* window_renderer_ptr); // todo: Ctor
+  ground(SDL_Renderer* window_renderer_ptr); // todo: Ctor
   ~ground() = default; // todo: Dtor, again for clean up (if necessary)
+
   //void add_animal(some argument here); // todo: Add an animal
+  void add_animal(animal* animal);
 
 
   void update(); // todo: "refresh the screen": Move animals and draw them
@@ -110,6 +113,7 @@ private:
   SDL_Event window_event_;
 
   // Other attributes here, for example an instance of ground
+  ground* groundApp = NULL;
 
 public:
   application(unsigned n_sheep, unsigned n_wolf); // Ctor

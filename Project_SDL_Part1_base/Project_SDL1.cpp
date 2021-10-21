@@ -43,6 +43,19 @@ int get_random_int_in_range(int min, int max) {
 }
 }
 
+ground::ground(SDL_Renderer* window_renderer_ptr_)
+{
+  this->window_renderer_ptr_ = window_renderer_ptr_;
+  // this->background_=background_;
+
+  
+}
+
+void ground::add_animal(animal* animal)
+  {
+    this->ListAnimal.push_back(animal);
+  };
+
 application::application(unsigned n_sheep, unsigned n_wolf) // config de la fenetre
 {
   SDL_CreateWindowAndRenderer(frame_width, frame_height, 0, &this->window_ptr_, &this->window_renderer_ptr_);
@@ -50,12 +63,15 @@ application::application(unsigned n_sheep, unsigned n_wolf) // config de la fene
   SDL_Rect background = { 0, 0, frame_width, frame_height};
   SDL_RenderFillRect(this->window_renderer_ptr_, &background);
 
+  this->groundApp = new ground(this->window_renderer_ptr_);
+
   for (unsigned i = 0; i < n_sheep;i++)
   {
-    sheep newSheep(this->window_renderer_ptr_);
+    this->groundApp->add_animal(new sheep(this->window_renderer_ptr_));
   }
+
   for (unsigned j = 0; j < n_wolf; j++)
-    wolf neWolf(this->window_renderer_ptr_);
+     this->groundApp->add_animal(new wolf(this->window_renderer_ptr_));
 
   SDL_RenderPresent(this->window_renderer_ptr_); // equivalent a lupdate
 
@@ -105,8 +121,3 @@ int application::loop(unsigned period)
   return 1;
 }
 
-// ground::ground(SDL_Renderer* window_renderer_ptr_)
-// {
-//   this->window_renderer_ptr_ = window_renderer_ptr_;;
-//   this->background_=background_;
-// }

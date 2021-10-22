@@ -27,6 +27,7 @@ void init();
 class animal {
 private:
 
+SDL_Renderer* window_renderer_ptr_;
 SDL_Texture* animal_text = NULL;
 SDL_Rect animal_rect;
 
@@ -44,12 +45,12 @@ public:
   SDL_Rect const getAnimalRect(){
     return this->animal_rect;
   }
-  //void draw(){}; // todo: Draw the animal on the screen <-> window_renderer_ptr.
+  void draw(); // todo: Draw the animal on the screen <-> window_renderer_ptr.
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
-  //virtual void move(){} = 0; // todo: Animals move around, but in a different
-                             // fashion depending on which type of animal
+  // virtual void move(){} = 0; // todo: Animals move around, but in a different
+                             //fashion depending on which type of animal
 };
 
 // Insert here:
@@ -87,6 +88,7 @@ private:
   // Attention, NON-OWNING ptr, again to the screen
   SDL_Renderer* window_renderer_ptr_;
   std::vector<animal*> ListAnimal;
+  SDL_Rect background;
   int counter = 0;
   // Some attribute to store all the wolves and sheep
   // here

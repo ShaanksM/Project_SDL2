@@ -46,9 +46,11 @@ int get_random_int_in_range(int min, int max) {
 ground::ground(SDL_Renderer* window_renderer_ptr_)
 {
   this->window_renderer_ptr_ = window_renderer_ptr_;
-  // this->background_=background_;
+  SDL_SetRenderDrawColor(this->window_renderer_ptr_, 190, 255, 91, 100);
+  SDL_Rect background = { 0, 0, frame_width, frame_height};
+  SDL_RenderFillRect(this->window_renderer_ptr_, &background);
+  this->background = background;
 
-  
 }
 
 void ground::add_animal(animal* animal)
@@ -59,9 +61,7 @@ void ground::add_animal(animal* animal)
 application::application(unsigned n_sheep, unsigned n_wolf) // config de la fenetre
 {
   SDL_CreateWindowAndRenderer(frame_width, frame_height, 0, &this->window_ptr_, &this->window_renderer_ptr_);
-  SDL_SetRenderDrawColor(this->window_renderer_ptr_, 190, 255, 91, 100);
-  SDL_Rect background = { 0, 0, frame_width, frame_height};
-  SDL_RenderFillRect(this->window_renderer_ptr_, &background);
+  
 
   this->groundApp = new ground(this->window_renderer_ptr_);
 
@@ -73,7 +73,7 @@ application::application(unsigned n_sheep, unsigned n_wolf) // config de la fene
   for (unsigned j = 0; j < n_wolf; j++)
      this->groundApp->add_animal(new wolf(this->window_renderer_ptr_));
 
-  SDL_RenderPresent(this->window_renderer_ptr_); // equivalent a lupdate
+  // SDL_RenderPresent(this->window_renderer_ptr_); // equivalent a lupdate
 
 }
 
@@ -86,7 +86,6 @@ application::~application()
 sheep::sheep(SDL_Renderer* window_renderer_ptr_):animal("../media/sheep.png",window_renderer_ptr_)
 {
   SDL_Rect rect = this->getAnimalRect();
-  SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
 }
 
 sheep::~sheep() = default;
@@ -94,20 +93,37 @@ sheep::~sheep() = default;
 wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window_renderer_ptr_)
 {
   SDL_Rect rect = this->getAnimalRect();
-  SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
 }
 
 wolf::~wolf() = default;
 
-animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) {
-  // todo: The constructor has to load the sdl_surface that corresponds to the
-  // texture
-    this->animal_text = load_texture_for(file_path, window_renderer_ptr);
-    SDL_QueryTexture(this->animal_text, NULL, NULL, &this->animal_rect.w, &this->animal_rect.h);
+animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) 
+{
+// todo: The constructor has to load the sdl_surface that corresponds to the
+// texture
+  this->window_renderer_ptr_ = window_renderer_ptr;
+  
+  this->animal_text = load_texture_for(file_path, window_renderer_ptr);
+  SDL_QueryTexture(this->animal_text, NULL, NULL, &this->animal_rect.w, &this->animal_rect.h);
 
-    this->animal_rect.x = get_random_int_in_range(frame_boundary, frame_width - frame_boundary);
-    this->animal_rect.y = get_random_int_in_range(frame_boundary, frame_height - frame_boundary);
+  this->animal_rect.x = get_random_int_in_range(frame_boundary, frame_width - frame_boundary);
+  this->animal_rect.y = get_random_int_in_range(frame_boundary, frame_height - frame_boundary);
+};
+
+  void animal::draw()
+  {
+    SDL_RenderCopy(this->window_renderer_ptr_, this->getAnimalText(), NULL, &this->animal_rect);
   };
+
+void ground::update()
+{
+  for(animal* animal : this->ListAnimal)
+  {
+    animal->draw();
+  }
+
+  SDL_RenderPresent(this->window_renderer_ptr_);
+}
 
 int application::loop(unsigned period)
 {
@@ -116,7 +132,7 @@ int application::loop(unsigned period)
   while(SDL_GetTicks() < period)
   {
     SDL_Delay(frame_time);
-    SDL_RenderPresent(this->window_renderer_ptr_);
+    this->groundApp->update();
   }
   return 1;
 }

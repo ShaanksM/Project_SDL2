@@ -1,5 +1,6 @@
 ﻿// SDL_Test.h: Includedatei für Include-Standardsystemdateien
 // oder projektspezifische Includedateien.
+//Merci mathieu pour les classes
 
 #pragma once
 

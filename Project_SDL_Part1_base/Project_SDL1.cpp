@@ -6,6 +6,7 @@
 #include <numeric>
 #include <random>
 #include <string>
+#include <math.h>
 
 void init() {
   // Initialize SDL
@@ -88,6 +89,26 @@ sheep::sheep(SDL_Renderer* window_renderer_ptr_):animal("../media/sheep.png",win
   SDL_Rect rect = this->getAnimalRect();
 }
 
+float RandomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
+
+void sheep::move()
+{
+  if(this->count % 10 == 0)
+  {
+    this->direction = RandomFloat(0, 1.0) * 2 * 3.14;
+  }
+
+  this->animal_rect.x = 3 * cos(this->direction) + this->animal_rect.x;
+  this->animal_rect.y = 3 * sin(this->direction) + this->animal_rect.y;
+}
+
+
+
 sheep::~sheep() = default;
 
 wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window_renderer_ptr_)
@@ -96,6 +117,17 @@ wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window
 }
 
 wolf::~wolf() = default;
+
+void wolf::move()
+{
+  if(this->count % 10 == 0)
+  {
+    this->direction = RandomFloat(0, 1.0) * 2 * 3.14;
+  }
+
+  this->animal_rect.x = 3 * cos(this->direction) + this->animal_rect.x;
+  this->animal_rect.y = 3 * sin(this->direction) + this->animal_rect.y;
+}
 
 animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) 
 {

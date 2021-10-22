@@ -30,8 +30,11 @@ private:
 SDL_Renderer* window_renderer_ptr_;
 SDL_Texture* animal_text = NULL;
 SDL_Rect animal_rect;
+float direction;
+int count = 0;  
 
 public:
+  
   animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr);
 
   ~animal(){
@@ -39,17 +42,51 @@ public:
   // behind you"
   SDL_DestroyTexture(this->animal_text); 
   };
+
   SDL_Texture* const getAnimalText(){
     return this->animal_text;
   }
+
   SDL_Rect const getAnimalRect(){
     return this->animal_rect;
   }
+
+  int const getCount()
+  {
+    return this.count;
+  }
+
+  void setCount(int count)
+  {
+    this.count = count;
+  }
+
+  float getDirection()
+  {
+    return this.direction;
+  }
+
+  void setDirection(flaot direction)
+  {
+    this.direction = direction;
+  }
+
+  SDL_rect getAnimal_Rect()
+  {
+    return this.animal_rect;
+  }
+
+  void setAniaml_Rect(int x, int y)
+  {
+    this.animal_rect.x = x;
+    this.animal_rect.y = y;
+  }
+
   void draw(); // todo: Draw the animal on the screen <-> window_renderer_ptr.
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
-  // virtual void move(){} = 0; // todo: Animals move around, but in a different
+  virtual void move() = 0; // todo: Animals move around, but in a different
                              //fashion depending on which type of animal
 };
 
@@ -63,7 +100,10 @@ class sheep : public animal {
   public:
   sheep(SDL_Renderer* window_renderer_ptr_);
   ~sheep();
+
+  void move() override;
   };
+
 
 // Insert here:
 // class wolf, derived from animal
@@ -78,6 +118,7 @@ class wolf : public animal {
   public:
   wolf(SDL_Renderer* window_renderer_ptr_);
   ~wolf();
+  void move() override;
   };
 
 // The "ground" on which all the animals live (like the std::vector

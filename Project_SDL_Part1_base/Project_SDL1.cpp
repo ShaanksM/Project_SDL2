@@ -58,10 +58,10 @@ void ground::add_animal(animal* animal)
 
 void ground::update() // Fonction update Animaux
 {
+  SDL_Rect background = { 0, 0, frame_width, frame_height};
+  SDL_RenderFillRect(this->window_renderer_ptr_, &background);
   for(auto animal : this->ListAnimal)
-  {
     animal->move();
-  }
 }
 
 application::application(unsigned n_sheep, unsigned n_wolf) // config de la fenetre
@@ -76,6 +76,7 @@ application::application(unsigned n_sheep, unsigned n_wolf) // config de la fene
   for (unsigned i = 0; i < n_sheep;i++)
   {
     this->groundApp->add_animal(new sheep(this->window_renderer_ptr_));
+
   }
 
   for (unsigned j = 0; j < n_wolf; j++)

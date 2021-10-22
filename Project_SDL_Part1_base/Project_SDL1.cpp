@@ -1,6 +1,7 @@
 ﻿#include "Project_SDL1.h"
 
 #include <algorithm>
+#include <iostream>
 #include <cassert>
 #include <cstdlib>
 #include <numeric>
@@ -54,6 +55,16 @@ ground::ground(SDL_Renderer* window_renderer_ptr_)
 
 }
 
+ground::~ground()
+{
+  for(animal* animal : this->ListAnimal)
+  {
+    delete animal;
+  }
+
+  this->ListAnimal.clear();
+}
+
 void ground::add_animal(animal* animal)
   {
     this->ListAnimal.push_back(animal);
@@ -80,6 +91,7 @@ application::application(unsigned n_sheep, unsigned n_wolf) // config de la fene
 
 application::~application()
 {
+  delete this->groundApp;
   SDL_DestroyRenderer(this->window_renderer_ptr_);
   SDL_DestroyWindow(this->window_ptr_);
 }
@@ -98,13 +110,29 @@ float RandomFloat(float a, float b) {
 
 void sheep::move()
 {
-  if(this->count % 10 == 0)
-  {
-    this->direction = RandomFloat(0, 1.0) * 2 * 3.14;
-  }
+  SDL_Rect rect = this->getAnimalRect();
 
-  this->animal_rect.x = 3 * cos(this->direction) + this->animal_rect.x;
-  this->animal_rect.y = 3 * sin(this->direction) + this->animal_rect.y;
+  if (rect.x + frame_boundary >= frame_width)
+    this->set_r(false);
+  else if (rect.x - frame_boundary + rect.w <= 0)
+    this->set_r(true);
+
+  if (rect.y + frame_boundary >= frame_height)
+    this->set_d(false);
+  else if (rect.y - frame_boundary + rect.h <= 0)
+    this->set_d(true);
+
+  if (this->get_r())
+    rect.x += 1;
+  else
+    rect.x -= 1;
+
+  if(this->get_d())
+    rect.y += 1;
+  else
+    rect.y -= 1;
+
+  this->setAnimalRect(rect);
 }
 
 
@@ -120,13 +148,29 @@ wolf::~wolf() = default;
 
 void wolf::move()
 {
-  if(this->count % 10 == 0)
-  {
-    this->direction = RandomFloat(0, 1.0) * 2 * 3.14;
-  }
+  SDL_Rect rect = this->getAnimalRect();
 
-  this->animal_rect.x = 3 * cos(this->direction) + this->animal_rect.x;
-  this->animal_rect.y = 3 * sin(this->direction) + this->animal_rect.y;
+  if (rect.x + frame_boundary >= frame_width)
+    this->set_r(false);
+  else if (rect.x - frame_boundary + rect.w <= 0)
+    this->set_r(true);
+
+  if (rect.y + frame_boundary >= frame_height)
+    this->set_d(false);
+  else if (rect.y - frame_boundary + rect.h <= 0)
+    this->set_d(true);
+
+  if (this->get_r())
+    rect.x += 1;
+  else
+    rect.x -= 1;
+
+  if(this->get_d())
+    rect.y += 1;
+  else
+    rect.y -= 1;
+
+  this->setAnimalRect(rect);
 }
 
 animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) 
@@ -140,6 +184,9 @@ animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr)
 
   this->animal_rect.x = get_random_int_in_range(frame_boundary, frame_width - frame_boundary);
   this->animal_rect.y = get_random_int_in_range(frame_boundary, frame_height - frame_boundary);
+
+  this->set_d((get_random_int_in_range(0,1) == 0));
+  this->set_r((get_random_int_in_range(0,1) == 0));
 };
 
   void animal::draw()
@@ -147,10 +194,16 @@ animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr)
     SDL_RenderCopy(this->window_renderer_ptr_, this->getAnimalText(), NULL, &this->animal_rect);
   };
 
+void ground::draw()
+{
+  SDL_RenderFillRect(this->window_renderer_ptr_, &this->background);
+}
 void ground::update()
 {
+  this->draw();
   for(animal* animal : this->ListAnimal)
   {
+    animal->move();
     animal->draw();
   }
 

@@ -30,8 +30,8 @@ private:
 SDL_Renderer* window_renderer_ptr_;
 SDL_Texture* animal_text = NULL;
 SDL_Rect animal_rect;
-float direction;
-int count = 0;  
+bool r;// Stoker des directions ( move )
+bool d; // d == down et r == right ( directions )
 
 public:
   
@@ -47,40 +47,34 @@ public:
     return this->animal_text;
   }
 
+  void setAnimalRect(SDL_Rect animal_rect)
+  {
+    this->animal_rect = animal_rect; 
+  }
+
   SDL_Rect const getAnimalRect(){
     return this->animal_rect;
   }
 
-  int const getCount()
+  void set_r(bool r)
   {
-    return this.count;
+    this->r = r;
   }
 
-  void setCount(int count)
+  void set_d(bool d)
   {
-    this.count = count;
+    this->d = d;
   }
 
-  float getDirection()
+  bool get_r()
   {
-    return this.direction;
+    return this->r;
   }
 
-  void setDirection(flaot direction)
+  bool get_d()
   {
-    this.direction = direction;
-  }
-
-  SDL_rect getAnimal_Rect()
-  {
-    return this.animal_rect;
-  }
-
-  void setAniaml_Rect(int x, int y)
-  {
-    this.animal_rect.x = x;
-    this.animal_rect.y = y;
-  }
+    return this->d;
+  } 
 
   void draw(); // todo: Draw the animal on the screen <-> window_renderer_ptr.
                  // Note that this function is not virtual, it does not depend
@@ -137,7 +131,7 @@ private:
 public:
   //void AjouterDesAnimaux(std::)
   ground(SDL_Renderer* window_renderer_ptr); // todo: Ctor
-  ~ground() = default; // todo: Dtor, again for clean up (if necessary)
+  ~ground(); // todo: Dtor, again for clean up (if necessary)
 
   //void add_animal(some argument here); // todo: Add an animal
   void add_animal(animal* animal);
@@ -145,6 +139,7 @@ public:
 
   void update(); // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
+  void draw();
 };
 
 // The application class, which is in charge of generating the window

@@ -1,5 +1,6 @@
 ﻿#include "Project_SDL1.h"
 
+#include <vector>
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
@@ -55,11 +56,11 @@ void ground::add_animal(animal* animal)
     this->ListAnimal.push_back(animal);
   };
 
-void ground::update() // FOnction Move Animeaux
+void ground::update() // Fonction update Animaux
 {
   for(std::vector<animal> animal : this->ListAnimal)
   {
-    animal->move();
+    animal->update();
   }
 }
 
@@ -80,8 +81,7 @@ application::application(unsigned n_sheep, unsigned n_wolf) // config de la fene
   for (unsigned j = 0; j < n_wolf; j++)
      this->groundApp->add_animal(new wolf(this->window_renderer_ptr_));
 
-  SDL_RenderPresent(this->window_renderer_ptr_); // equivalent a lupdate
-
+  SDL_RenderPresent(this->window_renderer_ptr_); // equivalent a SDL_Update
 }
 
 application::~application()
@@ -95,8 +95,8 @@ sheep::sheep(SDL_Renderer* window_renderer_ptr_):animal("../media/sheep.png",win
   SDL_Rect rect = this->getAnimalRect();
   SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
 }
-  
-sheep::move()
+
+sheep::update()
 {
   SDL_Rect rect = this->getAnimalRect();
 
@@ -135,7 +135,7 @@ wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window
 }
 
 
-wolf::move()
+wolf::update()
 {
   SDL_Rect rect = this->getAnimalRect();
 

@@ -27,6 +27,8 @@ void init();
 class animal {
 private:
 
+SDL_Renderer* window_renderer_ptr = NULL;
+
 SDL_Texture* animal_text = NULL;
 SDL_Rect animal_rect;
 bool r = false;// Stoker des directions ( move )
@@ -42,6 +44,14 @@ public:
   };
   SDL_Texture* const getAnimalText(){
     return this->animal_text;
+  }
+
+  void setWindow_renderer_ptr(SDL_Renderer* window_renderer_ptr) {
+    this->window_renderer_ptr = window_renderer_ptr;
+  }
+
+  SDL_Renderer* getWindow_renderer_ptr() {
+    return this->window_renderer_ptr;
   }
 
   void setAnimalRect(SDL_Rect animal_rect)
@@ -152,7 +162,7 @@ private:
 
 public:
   application(unsigned n_sheep, unsigned n_wolf); // Ctor
-  ~application();                                 // dtor
+  ~application();                              // dtor
 
   int loop(unsigned period); // main loop of the application.
                              // this ensures that the screen is updated

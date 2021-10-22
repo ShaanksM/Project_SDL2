@@ -58,9 +58,9 @@ void ground::add_animal(animal* animal)
 
 void ground::update() // Fonction update Animaux
 {
-  for(std::vector<animal> animal : this->ListAnimal)
+  for(auto animal : this->ListAnimal)
   {
-    animal->update();
+    animal->move();
   }
 }
 
@@ -84,86 +84,25 @@ application::application(unsigned n_sheep, unsigned n_wolf) // config de la fene
   SDL_RenderPresent(this->window_renderer_ptr_); // equivalent a SDL_Update
 }
 
+
+int application::loop(unsigned period)
+{
+  period = period * 1000; // Conversion des secondes en tick
+
+  while(SDL_GetTicks() < period)
+  {
+    this->groundApp->update();
+    SDL_Delay(frame_time);
+    SDL_RenderPresent(this->window_renderer_ptr_);
+  }
+  return 1;
+}
+
 application::~application()
 {
   SDL_DestroyRenderer(this->window_renderer_ptr_);
   SDL_DestroyWindow(this->window_ptr_);
 }
-
-sheep::sheep(SDL_Renderer* window_renderer_ptr_):animal("../media/sheep.png",window_renderer_ptr_)
-{
-  SDL_Rect rect = this->getAnimalRect();
-  SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
-}
-
-sheep::update()
-{
-  SDL_Rect rect = this->getAnimalRect();
-
-  if (rect.x + frame_boundary >= frame_width)
-    this->set_r(false);
-  else if (rect.x - frame_boundary + rect.w <= 0)
-    this->set_r(true);
-
-  if (rect.y + frame_boundary >= frame_height)
-    this->set_d(false);
-  else if (rect.y - frame_boundary + rect.h <= 0)
-    this->set_d(true);
-
-  if (this->get_r())
-    rect.x += 1;
-  else
-    rect.x -= 1;
-
-  if(this->get_d())
-    rect.y += 1;
-  else
-    rect.y -= 1;
-
-  this->setAnimalRect(rect);
-  SDL_RenderCopy(this->window_renderer_ptr_,this->getAnimalRect,NULL,&rect);
-
-}
-
-
-sheep::~sheep() = default;
-
-wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window_renderer_ptr_)
-{
-  SDL_Rect rect = this->getAnimalRect();
-  SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
-}
-
-
-wolf::update()
-{
-  SDL_Rect rect = this->getAnimalRect();
-
-  if (rect.x + frame_boundary >= frame_width)
-    this->set_r(false);
-  else if (rect.x - frame_boundary + rect.w <= 0)
-    this->set_r(true);
-
-  if (rect.y + frame_boundary >= frame_height)
-    this->set_d(false);
-  else if (rect.y - frame_boundary + rect.h <= 0)
-    this->set_d(true);
-
-  if (this->get_r())
-    rect.x += 1;
-  else
-    rect.x -= 1;
-
-  if(this->get_d())
-    rect.y += 1;
-  else
-    rect.y -= 1;
-
-  this->setAnimalRect(rect);
-  SDL_RenderCopy(this->window_renderer_ptr_,this->getAnimalRect,NULL,&rect);
-}
-
-wolf::~wolf() = default;
 
 animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) {
   // todo: The constructor has to load the sdl_surface that corresponds to the
@@ -175,15 +114,81 @@ animal::animal(const std::string& file_path, SDL_Renderer* window_renderer_ptr) 
     this->animal_rect.y = get_random_int_in_range(frame_boundary, frame_height - frame_boundary);
   };
 
-int application::loop(unsigned period)
-{
-  period = period * 1000; // Conversion des secondes en tick
 
-  while(SDL_GetTicks() < period)
-  {
-    this->update();
-    SDL_Delay(frame_time);
-    SDL_RenderPresent(this->window_renderer_ptr_);
-  }
-  return 1;
+sheep::sheep(SDL_Renderer* window_renderer_ptr_):animal("../media/sheep.png",window_renderer_ptr_)
+{
+  SDL_Rect rect = this->getAnimalRect();
+  this->setWindow_renderer_ptr(window_renderer_ptr_);
+  SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
 }
+
+void sheep::move()
+{
+  SDL_Rect rect = this->getAnimalRect();
+
+  if (rect.x + frame_boundary >= frame_width)
+    this->set_r(false);
+  else if (rect.x - frame_boundary + rect.w <= 0)
+    this->set_r(true);
+
+  if (rect.y + frame_boundary >= frame_height)
+    this->set_d(false);
+  else if (rect.y - frame_boundary + rect.h <= 0)
+    this->set_d(true);
+
+  if (this->get_r())
+    rect.x += 1;
+  else
+    rect.x -= 1;
+
+  if(this->get_d())
+    rect.y += 1;
+  else
+    rect.y -= 1;
+
+  this->setAnimalRect(rect);
+  SDL_RenderCopy(this->getWindow_renderer_ptr(), this->getAnimalText(), NULL, &rect);
+
+}
+
+
+sheep::~sheep() = default;
+
+wolf::wolf(SDL_Renderer* window_renderer_ptr_):animal("../media/wolf.png",window_renderer_ptr_)
+{
+  SDL_Rect rect = this->getAnimalRect();
+  this->setWindow_renderer_ptr(window_renderer_ptr_);
+  SDL_RenderCopy(window_renderer_ptr_, this->getAnimalText(), NULL, &rect);
+}
+
+
+void wolf::move()
+{
+  SDL_Rect rect = this->getAnimalRect();
+
+  if (rect.x + frame_boundary >= frame_width)
+    this->set_r(false);
+  else if (rect.x - frame_boundary + rect.w <= 0)
+    this->set_r(true);
+
+  if (rect.y + frame_boundary >= frame_height)
+    this->set_d(false);
+  else if (rect.y - frame_boundary + rect.h <= 0)
+    this->set_d(true);
+
+  if (this->get_r())
+    rect.x += 1;
+  else
+    rect.x -= 1;
+
+  if(this->get_d())
+    rect.y += 1;
+  else
+    rect.y -= 1;
+
+  this->setAnimalRect(rect);
+  SDL_RenderCopy(this->getWindow_renderer_ptr(), this->getAnimalText(), NULL, &rect);
+}
+
+wolf::~wolf() = default;
+
